@@ -1,0 +1,129 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vegetation-change-platform"
+version = "1.0.0"
+description = "GEE-based satellite analysis for detecting vegetation change"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Oscar Gonzalez", email = "oscgonz19@example.com"}
+]
+keywords = [
+    "vegetation",
+    "change-detection",
+    "google-earth-engine",
+    "remote-sensing",
+    "ndvi",
+    "landsat",
+    "sentinel-2",
+    "geospatial",
+    "satellite-imagery"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "earthengine-api>=0.1.370",
+    "geopandas>=0.12.0",
+    "pandas>=1.5.0",
+    "numpy>=1.23.0",
+    "shapely>=2.0.0",
+    "folium>=0.14.0",
+    "pyyaml>=6.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+]
+app = [
+    "streamlit>=1.28.0",
+    "streamlit-folium>=0.15.0",
+    "geemap>=0.30.0",
+]
+all = [
+    "vegetation-change-platform[dev,app]",
+]
+
+[project.urls]
+Homepage = "https://github.com/oscgonz19/vegetation-change-platform"
+Documentation = "https://github.com/oscgonz19/vegetation-change-platform/tree/main/docs"
+Repository = "https://github.com/oscgonz19/vegetation-change-platform"
+Issues = "https://github.com/oscgonz19/vegetation-change-platform/issues"
+
+[project.scripts]
+veg-change = "cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["veg_change_engine*", "cli*", "app*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.json"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.venv
+    | build
+    | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=veg_change_engine --cov-report=term-missing"
