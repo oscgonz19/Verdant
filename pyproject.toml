@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vegetation-change-platform"
+name = "verdant"
 version = "1.0.0"
 description = "GEE-based satellite analysis for detecting vegetation change"
 readme = "README.md"
@@ -20,7 +20,8 @@ keywords = [
     "landsat",
     "sentinel-2",
     "geospatial",
-    "satellite-imagery"
+    "satellite-imagery",
+    "verdant"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -51,10 +52,14 @@ dependencies = [
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-xdist>=3.0.0",
+    "httpx>=0.25.0",
     "black>=23.0.0",
     "isort>=5.12.0",
     "mypy>=1.0.0",
     "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
 ]
 app = [
     "streamlit>=1.28.0",
@@ -68,14 +73,14 @@ api = [
     "pydantic>=2.5.0",
 ]
 all = [
-    "vegetation-change-platform[dev,app,api]",
+    "verdant[dev,app,api]",
 ]
 
 [project.urls]
-Homepage = "https://github.com/oscgonz19/vegetation-change-platform"
-Documentation = "https://github.com/oscgonz19/vegetation-change-platform/tree/main/docs"
-Repository = "https://github.com/oscgonz19/vegetation-change-platform"
-Issues = "https://github.com/oscgonz19/vegetation-change-platform/issues"
+Homepage = "https://github.com/oscgonz19/Verdant"
+Documentation = "https://github.com/oscgonz19/Verdant/tree/main/docs"
+Repository = "https://github.com/oscgonz19/Verdant"
+Issues = "https://github.com/oscgonz19/Verdant/issues"
 
 [project.scripts]
 veg-change = "cli.main:main"

@@ -1,0 +1,177 @@
+# =============================================================================
+# Verdant - Docker Compose Configuration
+# =============================================================================
+#
+# Usage:
+#   docker-compose up -d                    # Start all services
+#   docker-compose up api                   # Start only API
+#   docker-compose up dashboard             # Start only dashboard
+#   docker-compose run tests                # Run tests
+#   docker-compose run sandbox              # Run sandbox
+#   docker-compose logs -f api              # View API logs
+#   docker-compose down                     # Stop all services
+#
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # API Service - FastAPI REST API
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: verdant-api
+    ports:
+      - "8000:8000"
+    environment:
+      - VERDANT_ENV=production
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data:ro
+      - ./output:/app/output
+      - ${HOME}/.config/earthengine:/home/verdant/.config/earthengine:ro
+    command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --workers 2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - verdant-net
+
+  # ---------------------------------------------------------------------------
+  # Dashboard Service - Streamlit Web App
+  # ---------------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: verdant-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - VERDANT_ENV=production
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data:ro
+      - ./output:/app/output
+      - ${HOME}/.config/earthengine:/home/verdant/.config/earthengine:ro
+    command: streamlit run app/Home.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - verdant-net
+
+  # ---------------------------------------------------------------------------
+  # Tests Service - Run pytest
+  # ---------------------------------------------------------------------------
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: testing
+    container_name: verdant-tests
+    environment:
+      - VERDANT_ENV=test
+      - PYTHONPATH=/app
+    volumes:
+      - ./tests:/app/tests
+      - ./htmlcov:/app/htmlcov
+      - ./test-results:/app/test-results
+    command: pytest tests/ -v --cov=engine --cov=services --cov-report=html --cov-report=term-missing
+    profiles:
+      - testing
+    networks:
+      - verdant-net
+
+  # ---------------------------------------------------------------------------
+  # Sandbox Service - Interactive testing environment
+  # ---------------------------------------------------------------------------
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: verdant-sandbox
+    environment:
+      - VERDANT_ENV=development
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - ${HOME}/.config/earthengine:/home/verdant/.config/earthengine:ro
+    command: python scripts/sandbox.py --verbose --report
+    profiles:
+      - testing
+    networks:
+      - verdant-net
+
+  # ---------------------------------------------------------------------------
+  # Jupyter Service - Interactive notebooks
+  # ---------------------------------------------------------------------------
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: verdant-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - VERDANT_ENV=development
+      - PYTHONPATH=/app
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./output:/app/output
+      - ${HOME}/.config/earthengine:/home/verdant/.config/earthengine:ro
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+    profiles:
+      - development
+    networks:
+      - verdant-net
+
+  # ---------------------------------------------------------------------------
+  # Dev Service - Development shell
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: verdant-dev
+    stdin_open: true
+    tty: true
+    environment:
+      - VERDANT_ENV=development
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - ${HOME}/.config/earthengine:/home/verdant/.config/earthengine:ro
+    command: bash
+    profiles:
+      - development
+    networks:
+      - verdant-net
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  verdant-net:
+    driver: bridge
+
+# =============================================================================
+# Volumes (for persistent data)
+# =============================================================================
+volumes:
+  output-data:
+  test-results:

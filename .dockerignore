@@ -1,0 +1,107 @@
+# =============================================================================
+# Docker Ignore - Exclude from Docker build context
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+*.manifest
+*.spec
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+coverage.xml
+*.cover
+.hypothesis
+.tox
+.nox
+
+# Mypy
+.mypy_cache
+.dmypy.json
+dmypy.json
+
+# Documentation build
+docs/_build
+site/
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Project specific
+output/
+data/
+credentials/
+*.geojson
+*.gpkg
+*.shp
+*.tif
+*.tiff
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.docker
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+Jenkinsfile
+
+# Misc
+*.md
+!README.md
+LICENSE
+Makefile
+sandbox_report.html
+sandbox_results.json
+test_output.log
