@@ -61,8 +61,14 @@ app = [
     "streamlit-folium>=0.15.0",
     "geemap>=0.30.0",
 ]
+api = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.6",
+    "pydantic>=2.5.0",
+]
 all = [
-    "vegetation-change-platform[dev,app]",
+    "vegetation-change-platform[dev,app,api]",
 ]
 
 [project.urls]
@@ -76,7 +82,7 @@ veg-change = "cli.main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["veg_change_engine*", "cli*", "app*"]
+include = ["veg_change_engine*", "engine*", "services*", "cli*", "app*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.json"]

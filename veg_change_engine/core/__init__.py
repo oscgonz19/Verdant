@@ -1,12 +1,14 @@
 """
 Core analysis modules for vegetation change detection.
 
-- composites: Temporal composite generation from satellite imagery
-- indices: Spectral index calculation (NDVI, NBR)
-- change: Change detection and classification
+Note:
+    This module provides backward-compatible re-exports from engine/.
+    For new code, prefer importing directly from engine.composites,
+    engine.indices, and engine.change.
 """
 
-from veg_change_engine.core.composites import (
+# Re-export from engine modules
+from engine.composites import (
     create_landsat_composite,
     create_sentinel_composite,
     create_fused_composite,
@@ -16,14 +18,14 @@ from veg_change_engine.core.composites import (
     harmonize_bands,
 )
 
-from veg_change_engine.core.indices import (
+from engine.indices import (
     add_ndvi,
     add_nbr,
     add_all_indices,
     calculate_delta_indices,
 )
 
-from veg_change_engine.core.change import (
+from engine.change import (
     classify_change,
     analyze_period_change,
     create_change_analysis,
